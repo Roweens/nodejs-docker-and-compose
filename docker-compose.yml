@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+    backend:
+        container_name: 'kupipodariday-backend'
+        build:
+            context: backend
+            dockerfile: Dockerfile
+        image: backend-compose-kupipodariday
+        restart: always
+        ports:
+            - '4000:3000'
+        env_file: .env
+        networks:
+            - internal
+
+    postgres:
+        container_name: 'postgres'
+        image: postgres:12.12-alpine
+        env_file: .env
+        restart: always
+        networks:
+            - internal
+        volumes:
+            - pg_data:/data/postgres_db
+
+    frontend:
+        container_name: 'kupipodariday-frontend'
+        build:
+            context: frontend
+            dockerfile: Dockerfile
+        image: frontend-compose-kupipodariday
+        restart: always
+        ports:
+            - '8081:80'
+        networks:
+            - external
+
+volumes:
+    pg_data:
+
+networks:
+    internal:
+    external:
